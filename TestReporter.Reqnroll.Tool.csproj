@@ -4,6 +4,7 @@
         <OutputType>Exe</OutputType>
         <TargetFrameworks>net8.0</TargetFrameworks>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
