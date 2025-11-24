@@ -130,7 +130,7 @@ namespace TestReporter.Reqnroll.Tool.Helpers.Features
                 .Where(im =>
                     im.Expression is MemberAccessExpressionSyntax mi
                     && mi.Name.ToString() == methodName)
-                .Select(x => methodParameters.Zip(x.ArgumentList.Arguments).Take(methodParameters.Count - 1).ToList())
+                .Select(x => methodParameters.Zip(x.ArgumentList.Arguments, (param, arg) => (param, arg)).Take(methodParameters.Count - 1).ToList())
                 .ToList();
         }
 
