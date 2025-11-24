@@ -41,6 +41,7 @@
             <Pack Condition=" '$(Configuration)' == 'Release' ">true</Pack>
             <PackagePath Condition=" '$(Configuration)' == 'Release' ">Report\</PackagePath>
         </Content>
+		<None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
 </Project>
