@@ -2,6 +2,12 @@
 
 [![NuGet version (TestReporter.Reqnroll.Tool)](https://img.shields.io/nuget/v/TestReporter.Reqnroll.Tool.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/TestReporter.Reqnroll.Tool/)
 
+TestReporter.Reqnroll.Tool is derived from the open-source project 
+[TestReporter.SpecFlow.Tool](https://github.com/alexmalimon/TestReporter.SpecFlow.Tool)
+by Alex Malimon, licensed under the MIT License.
+
+This project adapts the original tool to support Reqnroll.
+
 TestReporter.Reqnroll.Tool is a .NET Core Global Tool used to generate HTML report file for [Reqnroll](https://reqnroll.net/) step definitions usage.
 
 ## Installation

@@ -194,3 +194,4 @@ project.lock.json
 bundle.js
 bundle.js.map
 /.idea/
+/Properties/launchSettings.json
