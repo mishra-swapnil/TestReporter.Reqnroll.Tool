@@ -1,5 +1,5 @@
 ﻿
-namespace TestReporter.SpecFlow.Tool.Models.Report
+namespace TestReporter.Reqnroll.Tool.Models.Report
 {
     public class ReportSettings
     {
@@ -7,7 +7,7 @@ namespace TestReporter.SpecFlow.Tool.Models.Report
 
         public string MaterialIcons { get; set; }
 
-        public string SpecFlowIconPath { get; set; }
+        public string ReqnrollIconPath { get; set; }
 
         public string GeneratedDateTime { get; set; }
 

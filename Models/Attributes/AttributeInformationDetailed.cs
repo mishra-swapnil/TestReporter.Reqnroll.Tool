@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using TestReporter.SpecFlow.Tool.Models.StepDefinitions;
+using TestReporter.Reqnroll.Tool.Models.StepDefinitions;
 
-namespace TestReporter.SpecFlow.Tool.Models.Attributes
+namespace TestReporter.Reqnroll.Tool.Models.Attributes
 {
     public class AttributeInformationDetailed : AttributeInformation
     {

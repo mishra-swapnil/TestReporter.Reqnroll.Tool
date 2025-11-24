@@ -5,12 +5,12 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;
-using TestReporter.SpecFlow.Tool.Constants;
+using TestReporter.Reqnroll.Tool.Constants;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
-using TestReporter.SpecFlow.Tool.Models.Attributes;
+using TestReporter.Reqnroll.Tool.Models.Attributes;
 
-namespace TestReporter.SpecFlow.Tool.Helpers.Features
+namespace TestReporter.Reqnroll.Tool.Helpers.Features
 {
     public static class CSharpFeatureHelper
     {

@@ -3,12 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;
-using TestReporter.SpecFlow.Tool.Constants;
+using TestReporter.Reqnroll.Tool.Constants;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
-using TestReporter.SpecFlow.Tool.Models.Attributes;
+using TestReporter.Reqnroll.Tool.Models.Attributes;
 
-namespace TestReporter.SpecFlow.Tool.Helpers.StepDefinitions
+namespace TestReporter.Reqnroll.Tool.Helpers.StepDefinitions
 {
     public static class StepDefinitionHelper
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TestReporter.SpecFlow.Tool.Models.Report
+namespace TestReporter.Reqnroll.Tool.Models.Report
 {
     public class ReportDetails
     {
@@ -10,7 +10,7 @@ namespace TestReporter.SpecFlow.Tool.Models.Report
 
         public int TotalNumberOfSteps { get; set; }
 
-        public string SpecFlowIconPath { get; set; }
+        public string ReqnrollIconPath { get; set; }
 
         public string GeneratedDateTime { get; set; }
 

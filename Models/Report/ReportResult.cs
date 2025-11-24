@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using TestReporter.SpecFlow.Tool.Models.Attributes;
+using TestReporter.Reqnroll.Tool.Models.Attributes;
 
-namespace TestReporter.SpecFlow.Tool.Models.Report
+namespace TestReporter.Reqnroll.Tool.Models.Report
 {
     public class ReportResult
     {

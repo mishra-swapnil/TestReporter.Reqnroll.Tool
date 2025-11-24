@@ -4,15 +4,15 @@ using System.IO;
 using System.Linq;
 using CommandLine;
 using System.Diagnostics;
-using TestReporter.SpecFlow.Tool.Constants;
-using TestReporter.SpecFlow.Tool.Models.Report;
-using TestReporter.SpecFlow.Tool.Helpers.Calls;
-using TestReporter.SpecFlow.Tool.Models.Console;
-using TestReporter.SpecFlow.Tool.Helpers.Reports;
-using TestReporter.SpecFlow.Tool.Helpers.Features;
-using TestReporter.SpecFlow.Tool.Helpers.StepDefinitions;
+using TestReporter.Reqnroll.Tool.Constants;
+using TestReporter.Reqnroll.Tool.Models.Report;
+using TestReporter.Reqnroll.Tool.Helpers.Calls;
+using TestReporter.Reqnroll.Tool.Models.Console;
+using TestReporter.Reqnroll.Tool.Helpers.Reports;
+using TestReporter.Reqnroll.Tool.Helpers.Features;
+using TestReporter.Reqnroll.Tool.Helpers.StepDefinitions;
 
-namespace TestReporter.SpecFlow.Tool
+namespace TestReporter.Reqnroll.Tool
 {
     public static class Program
     {
@@ -99,7 +99,7 @@ namespace TestReporter.SpecFlow.Tool
                     MaterialIcons = ApplicationConstants.MaterialIcons,
                     GeneratedDateTime = DateTime.UtcNow.ToString("g"),
                     ProjectName = Path.GetFileNameWithoutExtension(projectFile),
-                    SpecFlowIconPath = ApplicationConstants.SpecFlowIconPathGithubUrl,
+                    ReqnrollIconPath = ApplicationConstants.ReqnrollIconPathGithubUrl,
                     MaterialJsLibraryPath = ApplicationConstants.MaterialJsLibraryPath,
                     MaterialCssLibraryPath = ApplicationConstants.MaterialCssLibraryPath
                 };

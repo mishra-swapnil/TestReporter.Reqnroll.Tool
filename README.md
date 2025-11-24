@@ -1,13 +1,13 @@
-# TestReporter.SpecFlow.Tool
+# TestReporter.Reqnroll.Tool
 
-[![NuGet version (TestReporter.SpecFlow.Tool)](https://img.shields.io/nuget/v/TestReporter.SpecFlow.Tool.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/TestReporter.SpecFlow.Tool/)
+[![NuGet version (TestReporter.Reqnroll.Tool)](https://img.shields.io/nuget/v/TestReporter.Reqnroll.Tool.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/TestReporter.Reqnroll.Tool/)
 
-TestReporter.SpecFlow.Tool is a .NET Core Global Tool used to generate HTML report file for [SpecFlow](https://specflow.org/) step definitions usage.
+TestReporter.Reqnroll.Tool is a .NET Core Global Tool used to generate HTML report file for [Reqnroll](https://reqnroll.net/) step definitions usage.
 
 ## Installation
 
 ```text
-dotnet tool install --global TestReporter.SpecFlow.Tool
+dotnet tool install --global TestReporter.Reqnroll.Tool
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ dotnet tool install --global TestReporter.SpecFlow.Tool
 ```text
 Arguments:
 
-  -p, --project    Required. Path to the SpecFlow project folder
+  -p, --project    Required. Path to the Reqnroll project folder
 
   -o, --output     Path to directory, where test report file will be saved
 
@@ -28,10 +28,10 @@ Arguments:
 
 #### Generate report for project and save HTML in current folder:
 ```text
-specflow-report --project "Test project folder"
+reqnroll-report --project "Test project folder"
 ```
 
 #### Generate report for project and save HTML in output folder:
 ```text
-specflow-report --project "Test project folder" --output "Report Output folder"
+reqnroll-report --project "Test project folder" --output "Report Output folder"
 ```

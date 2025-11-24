@@ -1,5 +1,5 @@
 
-namespace TestReporter.SpecFlow.Tool.Models.StepDefinitions
+namespace TestReporter.Reqnroll.Tool.Models.StepDefinitions
 {
     public class StepDetails
     {

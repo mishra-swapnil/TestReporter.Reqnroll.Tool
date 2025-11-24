@@ -1,5 +1,5 @@
 ﻿
-namespace TestReporter.SpecFlow.Tool.Models.Attributes
+namespace TestReporter.Reqnroll.Tool.Models.Attributes
 {
     public class AttributeInformation
     {

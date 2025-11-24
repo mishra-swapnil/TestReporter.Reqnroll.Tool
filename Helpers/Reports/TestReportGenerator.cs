@@ -4,11 +4,11 @@ using System.Linq;
 using RazorEngine;
 using RazorEngine.Templating;
 using System.Collections.Generic;
-using TestReporter.SpecFlow.Tool.Constants;
-using TestReporter.SpecFlow.Tool.Models.Report;
-using TestReporter.SpecFlow.Tool.Models.Attributes;
+using TestReporter.Reqnroll.Tool.Constants;
+using TestReporter.Reqnroll.Tool.Models.Report;
+using TestReporter.Reqnroll.Tool.Models.Attributes;
 
-namespace TestReporter.SpecFlow.Tool.Helpers.Reports
+namespace TestReporter.Reqnroll.Tool.Helpers.Reports
 {
     public static class TestReportGenerator
     {
@@ -22,7 +22,7 @@ namespace TestReporter.SpecFlow.Tool.Helpers.Reports
                     TotalNumberOfSteps = stepsCalls.Count,
                     ProjectName = reportSettings.ProjectName,
                     MaterialIcons = reportSettings.MaterialIcons,
-                    SpecFlowIconPath = reportSettings.SpecFlowIconPath,
+                    ReqnrollIconPath = reportSettings.ReqnrollIconPath,
                     GeneratedDateTime = reportSettings.GeneratedDateTime,
                     MaterialJsLibraryPath = reportSettings.MaterialJsLibraryPath,
                     MaterialCssLibraryPath = reportSettings.MaterialCssLibraryPath,

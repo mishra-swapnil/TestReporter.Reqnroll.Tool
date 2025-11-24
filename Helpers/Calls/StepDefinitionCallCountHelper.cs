@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using TestReporter.SpecFlow.Tool.Models.Attributes;
-using TestReporter.SpecFlow.Tool.Models.StepDefinitions;
+using TestReporter.Reqnroll.Tool.Models.Attributes;
+using TestReporter.Reqnroll.Tool.Models.StepDefinitions;
 
-namespace TestReporter.SpecFlow.Tool.Helpers.Calls
+namespace TestReporter.Reqnroll.Tool.Helpers.Calls
 {
     public static class StepDefinitionCallCountHelper
     {
