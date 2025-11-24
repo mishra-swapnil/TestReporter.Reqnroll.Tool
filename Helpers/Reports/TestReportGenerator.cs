@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using RazorEngine;
 using RazorEngine.Templating;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using TestReporter.Reqnroll.Tool.Constants;
 using TestReporter.Reqnroll.Tool.Models.Report;
@@ -12,10 +13,19 @@ namespace TestReporter.Reqnroll.Tool.Helpers.Reports
 {
     public static class TestReportGenerator
     {
-        public static string GetHtmlReport(List<AttributeInformationDetailed> stepsCalls,
-            ReportSettings reportSettings) =>
-            Engine.Razor.RunCompile(
-                string.Join(Environment.NewLine, File.ReadAllLines(ApplicationConstants.ReportTemplatePath).Skip(1)),
+        private static readonly Lazy<Task<string>> TemplateContentAsync = new Lazy<Task<string>>(async () => 
+        {
+            var lines = await File.ReadAllLinesAsync(ApplicationConstants.ReportTemplatePath);
+            return string.Join(Environment.NewLine, lines.Skip(1));
+        });
+
+        public static async Task<string> GetHtmlReportAsync(List<AttributeInformationDetailed> stepsCalls,
+            ReportSettings reportSettings)
+        {
+            var templateContent = await TemplateContentAsync.Value;
+            
+            return Engine.Razor.RunCompile(
+                templateContent,
                 ApplicationConstants.TestReportTemplateKey, typeof(ReportDetails),
                 new ReportDetails
                 {
@@ -34,5 +44,6 @@ namespace TestReporter.Reqnroll.Tool.Helpers.Reports
                             Attributes = x.ToList()
                         })
                 });
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,10 @@ namespace TestReporter.Reqnroll.Tool.Constants
 {
     public static class ApplicationConstants
     {
-        private static string PackageDirectoryPath { get; } =
-            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        private static readonly Lazy<string> PackageDirectoryPathLazy = new Lazy<string>(() =>
+            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty);
+
+        private static string PackageDirectoryPath => PackageDirectoryPathLazy.Value;
 
         public static string ProjectFileExtension { get; } = "*.csproj";
 
@@ -22,20 +25,26 @@ namespace TestReporter.Reqnroll.Tool.Constants
 
         public static string GeneratedReportFilePathWithName { get; } = "Test Report - {0}.html";
 
-        public static IEnumerable<string> ExcludeDirectories { get; } =
+        public static IReadOnlyList<string> ExcludeDirectories { get; } =
             new[] { "bin", "obj" };
 
-        private static IEnumerable<string> _StepDefinitionAttributeMethods =
+        private static readonly string[] _StepDefinitionAttributeMethods =
             new[] { "Given", "When", "Then" };
 
-        public static IEnumerable<string> StepDefinitionAttributeMethods { get; } = _StepDefinitionAttributeMethods.Concat(_StepDefinitionAttributeMethods.Select(x => x + "Async"));
+        public static readonly IReadOnlyList<string> StepDefinitionAttributeMethods = 
+            _StepDefinitionAttributeMethods
+                .Concat(_StepDefinitionAttributeMethods.Select(x => x + "Async"))
+                .ToArray();
 
-        private static IEnumerable<string> _GeneratedStepDefinitionMethods { get; } =
+        private static readonly string[] _GeneratedStepDefinitionMethods =
             new[] { "When", "Given", "Then", "And", "But" };
 
-        public static IEnumerable<string> GeneratedStepDefinitionMethods { get; } = _GeneratedStepDefinitionMethods.Concat(_GeneratedStepDefinitionMethods.Select(x => x + "Async"));
+        public static readonly IReadOnlyList<string> GeneratedStepDefinitionMethods = 
+            _GeneratedStepDefinitionMethods
+                .Concat(_GeneratedStepDefinitionMethods.Select(x => x + "Async"))
+                .ToArray();
 
-        public static string ReportTemplatePath { get; } =
+        public static string ReportTemplatePath => 
             Path.Combine(PackageDirectoryPath, "Report", "Template.cshtml");
 
         public static string MaterialIcons { get; } =

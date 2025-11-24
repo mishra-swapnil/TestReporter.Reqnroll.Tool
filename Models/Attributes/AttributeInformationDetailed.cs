@@ -7,6 +7,6 @@ namespace TestReporter.Reqnroll.Tool.Models.Attributes
     {
         public int NumberOfCalls { get; set; }
 
-        public IEnumerable<StepDetails> GeneratedStepDefinitions { get; set; }
+        public IEnumerable<StepDetails> GeneratedStepDefinitions { get; set; } = new List<StepDetails>();
     }
 }

@@ -5,6 +5,8 @@
         <TargetFrameworks>net8.0</TargetFrameworks>
         <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">

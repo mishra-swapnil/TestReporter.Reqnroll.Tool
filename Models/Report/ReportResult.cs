@@ -5,8 +5,8 @@ namespace TestReporter.Reqnroll.Tool.Models.Report
 {
     public class ReportResult
     {
-        public string Type { get; set; }
+        public string Type { get; set; } = string.Empty;
 
-        public List<AttributeInformationDetailed> Attributes { get; set; }
+        public List<AttributeInformationDetailed> Attributes { get; set; } = new();
     }
 }

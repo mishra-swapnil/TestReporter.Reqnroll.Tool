@@ -7,10 +7,10 @@ namespace TestReporter.Reqnroll.Tool.Models.Console
     public class ConsoleArguments
     {
         [Option('p', "project", Required = true, HelpText = "Path to the Reqnroll project folder")]
-        public string ProjectFolder { get; set; }
+        public string ProjectFolder { get; set; } = string.Empty;
 
         [Option('o', "output", Required = false, HelpText = "Path to directory, where test report file will be saved")]
-        public string TestReportDirectory { get; set; }
+        public string? TestReportDirectory { get; set; }
 
         [Usage(ApplicationAlias = "reqnroll-report")]
         public static IEnumerable<Example> Examples => new List<Example>

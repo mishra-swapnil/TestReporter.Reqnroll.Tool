@@ -3,6 +3,7 @@ using Serilog;
 using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;
 using TestReporter.Reqnroll.Tool.Constants;
@@ -14,75 +15,97 @@ namespace TestReporter.Reqnroll.Tool.Helpers.Features
 {
     public static class CSharpFeatureHelper
     {
-        public static IEnumerable<AttributeInformation> ExtractInformationFromFiles(
-            IEnumerable<string> stepDefinitionGeneratedFilePaths) =>
-            stepDefinitionGeneratedFilePaths.Select(ExtractInformationFromFile)
-                .SelectMany(x => x);
+        public static async Task<List<AttributeInformation>> ExtractInformationFromFilesAsync(
+            IEnumerable<string> stepDefinitionGeneratedFilePaths)
+        {
+            var tasks = stepDefinitionGeneratedFilePaths.Select(ExtractInformationFromFileAsync);
+            var results = await Task.WhenAll(tasks);
+            return results.SelectMany(x => x).ToList();
+        }
 
-        private static IEnumerable<AttributeInformation> ExtractInformationFromFile(string path)
+        private static async Task<IEnumerable<AttributeInformation>> ExtractInformationFromFileAsync(string path)
         {
             Log.Information("Extracting information about generated feature code from file: {Path}", path);
 
-            var generatedStepDefinitionContent = File.ReadAllText(path);
+            var generatedStepDefinitionContent = await File.ReadAllTextAsync(path);
 
             var nodes = CSharpSyntaxTree.ParseText(generatedStepDefinitionContent)
                 .GetRoot()
                 .DescendantNodes()
                 .ToList();
 
-            var generatedStepDefinitions = ExtractInformationAboutGeneratedStepDefinitions(nodes, path);
-            var generatedStepOutlines = ExtractInformationAboutGeneratedScenarioOutlines(nodes, path);
+            var generatedStepDefinitions = await ExtractInformationAboutGeneratedStepDefinitionsAsync(nodes, path);
+            var generatedStepOutlines = await ExtractInformationAboutGeneratedScenarioOutlinesAsync(nodes, path);
             return generatedStepDefinitions.Union(generatedStepOutlines);
         }
 
-        private static IEnumerable<AttributeInformation> ExtractInformationAboutGeneratedStepDefinitions(
-            IEnumerable<SyntaxNode> nodes, string path) =>
-            nodes.OfType<InvocationExpressionSyntax>()
+        private static async Task<List<AttributeInformation>> ExtractInformationAboutGeneratedStepDefinitionsAsync(
+            IEnumerable<SyntaxNode> nodes, string path)
+        {
+            var invocations = nodes.OfType<InvocationExpressionSyntax>()
                 .Where(invokedMethod =>
-                    invokedMethod.Expression is MemberAccessExpressionSyntax memberAccessExpressionSyntax
-                    && ApplicationConstants.GeneratedStepDefinitionMethods.Contains(memberAccessExpressionSyntax.Name
-                        .ToString())
-                    && invokedMethod.ArgumentList.Arguments.FirstOrDefault(arg =>
-                        arg.ToString().Contains(ApplicationConstants.ExcludeExamplePattern)) == null
-                )
-                .Select(invokedMethod =>
                 {
-                    var memberAccessExpressionSyntax = invokedMethod.Expression as MemberAccessExpressionSyntax;
-                    var methodArgumentTypeName = memberAccessExpressionSyntax?.Name.ToString();
-                    var methodArgumentText = invokedMethod.ArgumentList.Arguments
-                        .FirstOrDefault()
-                        ?.ToString();
+                    if (invokedMethod.Expression is not MemberAccessExpressionSyntax memberAccess)
+                        return false;
+                    
+                    if (!ApplicationConstants.GeneratedStepDefinitionMethods.Contains(memberAccess.Name.ToString()))
+                        return false;
+                    
+                    return !invokedMethod.ArgumentList.Arguments.Any(arg =>
+                        arg.ToString().Contains(ApplicationConstants.ExcludeExamplePattern));
+                })
+                .ToList();
 
-                    var methodArgumentValue = CSharpScript.EvaluateAsync<string>(methodArgumentText).Result;
+            var results = new List<AttributeInformation>();
+            var featureFileName = Path.GetFileNameWithoutExtension(path);
 
-                    Log.Information("Found method call of type {Type} with argument {Argument}",
-                        methodArgumentTypeName, methodArgumentValue);
+            foreach (var invokedMethod in invocations)
+            {
+                var memberAccessExpressionSyntax = (MemberAccessExpressionSyntax)invokedMethod.Expression;
+                var methodArgumentTypeName = memberAccessExpressionSyntax.Name.ToString();
+                var methodArgumentText = invokedMethod.ArgumentList.Arguments.FirstOrDefault()?.ToString();
 
-                    return new AttributeInformation
-                    {
-                        Type = methodArgumentTypeName,
-                        Value = methodArgumentValue,
-                        FeatureFileName = Path.GetFileNameWithoutExtension(path)
-                    };
+                var methodArgumentValue = await CSharpScript.EvaluateAsync<string>(methodArgumentText);
+
+                Log.Information("Found method call of type {Type} with argument {Argument}",
+                    methodArgumentTypeName, methodArgumentValue);
+
+                results.Add(new AttributeInformation
+                {
+                    Type = methodArgumentTypeName,
+                    Value = methodArgumentValue,
+                    FeatureFileName = featureFileName
                 });
+            }
 
-        private static IEnumerable<AttributeInformation> ExtractInformationAboutGeneratedScenarioOutlines(
+            return results;
+        }
+
+        private static async Task<List<AttributeInformation>> ExtractInformationAboutGeneratedScenarioOutlinesAsync(
             List<SyntaxNode> nodes, string path)
         {
             var methodCalList = nodes
                 .OfType<InvocationExpressionSyntax>()
                 .Where(invokedMethod =>
-                    invokedMethod.Expression is MemberAccessExpressionSyntax memberAccessExpressionSyntax
-                    && ApplicationConstants.GeneratedStepDefinitionMethods.Contains(memberAccessExpressionSyntax.Name
-                        .ToString())
-                    && invokedMethod.ArgumentList.Arguments.FirstOrDefault(arg =>
-                        arg.ToString().Contains(ApplicationConstants.ExcludeExamplePattern)) != null
-                ).ToList();
+                {
+                    if (invokedMethod.Expression is not MemberAccessExpressionSyntax memberAccess)
+                        return false;
+                    
+                    if (!ApplicationConstants.GeneratedStepDefinitionMethods.Contains(memberAccess.Name.ToString()))
+                        return false;
+                    
+                    return invokedMethod.ArgumentList.Arguments.Any(arg =>
+                        arg.ToString().Contains(ApplicationConstants.ExcludeExamplePattern));
+                })
+                .ToList();
 
-            return methodCalList.Select(x =>
+            var featureFileName = Path.GetFileNameWithoutExtension(path);
+            var results = new List<AttributeInformation>();
+
+            foreach (var x in methodCalList)
             {
-                var memberAccessExpressionSyntax = x.Expression as MemberAccessExpressionSyntax;
-                var methodArgumentTypeName = memberAccessExpressionSyntax?.Name.ToString();
+                var memberAccessExpressionSyntax = (MemberAccessExpressionSyntax)x.Expression;
+                var methodArgumentTypeName = memberAccessExpressionSyntax.Name.ToString();
 
                 var formattedStringSyntax = x.ArgumentList.Arguments.FirstOrDefault();
                 var invokeExpression = formattedStringSyntax?.Expression as InvocationExpressionSyntax;
@@ -96,23 +119,29 @@ namespace TestReporter.Reqnroll.Tool.Helpers.Features
                     .ToList();
 
                 var argumentNameValues = ExtractMethodInfoFromInvocation(x, nodes);
-                var resultMap = argumentNameValues
-                    .Select(arg => arg.Where(k => formatArgumentsNames?.Contains(k.Item1) == true)
-                        .Select(v => new KeyValuePair<string, string>(v.Item1, v.Item2?.ToFullString())).ToList())
-                    .ToList();
+                
+                foreach (var arg in argumentNameValues)
+                {
+                    var filteredArgs = arg
+                        .Where(k => formatArgumentsNames?.Contains(k.Item1) == true)
+                        .Select(v => (v.Item1, v.Item2?.ToFullString()))
+                        .ToList();
 
-                return resultMap.Select(args => args.ToDictionary(k => k.Key, v => v.Value)
-                        .Aggregate(string.Empty, (state, kvp) =>
-                            state + "\n" + $"var {kvp.Key} = {kvp.Value};")).Select(dict => CSharpScript
-                        .RunAsync<string>(dict).Result
-                        .ContinueWithAsync<string>(formatStringText).Result.ReturnValue)
-                    .Select(r => new AttributeInformation
+                    var dictScript = string.Join("\n", filteredArgs.Select(kvp => $"var {kvp.Item1} = {kvp.Item2};"));
+                    
+                    var scriptState = await CSharpScript.RunAsync<string>(dictScript);
+                    var result = await scriptState.ContinueWithAsync<string>(formatStringText);
+                    
+                    results.Add(new AttributeInformation
                     {
                         Type = methodArgumentTypeName,
-                        Value = r,
-                        FeatureFileName = Path.GetFileNameWithoutExtension(path)
+                        Value = result.ReturnValue,
+                        FeatureFileName = featureFileName
                     });
-            }).SelectMany(x => x.ToList()).ToList();
+                }
+            }
+
+            return results;
         }
 
         private static IEnumerable<List<ValueTuple<string, ArgumentSyntax>>> ExtractMethodInfoFromInvocation(
@@ -126,11 +155,13 @@ namespace TestReporter.Reqnroll.Tool.Helpers.Features
                 .Select(x => x.Identifier.Text)
                 .ToList();
 
+            var parameterCount = methodParameters.Count - 1;
+
             return nodes.OfType<InvocationExpressionSyntax>()
-                .Where(im =>
-                    im.Expression is MemberAccessExpressionSyntax mi
-                    && mi.Name.ToString() == methodName)
-                .Select(x => methodParameters.Zip(x.ArgumentList.Arguments, (param, arg) => (param, arg)).Take(methodParameters.Count - 1).ToList())
+                .Where(im => im.Expression is MemberAccessExpressionSyntax mi && mi.Name.ToString() == methodName)
+                .Select(x => methodParameters.Zip(x.ArgumentList.Arguments, (param, arg) => (param, arg))
+                    .Take(parameterCount)
+                    .ToList())
                 .ToList();
         }
 
@@ -138,7 +169,7 @@ namespace TestReporter.Reqnroll.Tool.Helpers.Features
             expressionSyntax switch
             {
                 MethodDeclarationSyntax e => e,
-                _ => FindMethodExpressionSyntax(expressionSyntax.Parent)
+                _ => FindMethodExpressionSyntax(expressionSyntax.Parent!)
             };
     }
 }
